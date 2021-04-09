@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- Bootstrap CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+
+
+	<title>Poolside Jobs</title>
+</head>
+
+<body>
+
+	<div class="container mt-5">
+
+		<h1 class="mb-4">Poolside Jobs</h1>
+
+		<form class="input-group input-group-lg mb-4" onsubmit="search(); return false;">
+			<input type="text" class="form-control" placeholder="Suchbegriffe" id="query">
+			<button class="btn btn-primary" type="submit" value="submit" id="submit">Suchen</button>
+		</form>
+
+		<ul class="list-group mb-5" id="results"></ul>
+	</div>
+
+	<!--------<script src="../javascript/script.js"></script>--------->
+
+</body>
+
+
+<script type="text/javascript">
+
+	let workItems = [];
+
+	function search() {
+		loadWork();
+		// TODO
+		// For this problem we'd like the user to enter some query (e.g.
+		// "zurich") and press "Suchen". After that, we perform a request
+		// to a specific endpoint to get matching inserate and display them
+		// to the user, similar to https://poolside.ch/jobs.
+		//
+		// Concretely I'd like you to perform the following steps:
+		// 1. Fetch the latest inserate with the query in the searchfield
+		//    and using the endpoint provided below
+		// 2. Display the inserate similar to the current dummy inserate
+		// 3. (Bonus) If there are no matching inserate or no search has
+		//            been performed, display an appropriate message
+		// 4. (Bonus) Also display the description of the inserate
+		//
+		// Feel free to change all code / HTML / ... as you see fit.
+		// It should be possible to solve this without the help of any additional
+		// library but feel free to use one if it helps.
+		// This template uses the latest version of https://getbootstrap.com,
+		// perhaps the documentation might be useful for the bonus questions.
+		//
+		// Endpoint: https://dev.poolside.ch/api/latest?query={query}
+		// e.g. https://dev.poolside.ch/api/latest?query=zurich
+	}
+
+	const loadWork = async () => {
+		var queryFromEditBox = document.getElementById("query").value;
+
+		const res = await fetch('https://dev.poolside.ch/api/latest?query=' + queryFromEditBox);
+		workItems = await res.json();
+
+		displayWork(workItems, queryFromEditBox);
+	};
+
+
+	const displayWork = (workItems, searchString) => {
+		if (workItems.length > 0) {
+			results.innerHTML = workItems.filter((work) => {
+				return (work.title.includes(searchString) || work.title.toLowerCase().includes(searchString) ||
+					work.region.includes(searchString) || work.region.toLowerCase().includes(searchString));
+			}).map((work) => {
+				return `
+            <li class="list-group-item">
+                <div class="me-auto">
+                    <div class="fw-bold">${work.title}</div>
+                    <span class="text-muted mb-0"><p class="fw-bold mb-0">Ort: </p>${work.region}</span>
+                    <span class="text-muted"><p class="fw-bold mt-3 mb-0">Beschreibung: </p>${work.description}</span>
+                </div>
+            </li>
+        `;
+			})
+				.join('');
+		} else {
+			results.innerHTML = `
+        <div class="alert alert-light h5" role="alert">
+            Leider keine passende Jobs gefunden
+        </div>`;
+		}
+	};
+	loadWork();
+
+</script>
+
+</html>
